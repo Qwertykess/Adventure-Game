@@ -1,0 +1,88 @@
+ Main menu - Title
+    Play
+        Enter name:
+    Statistics
+        Name:
+            play times:
+            Skill stats:
+    Exit
+ 
+ PLAY BEGIN:
+ Player stats:
+    HP
+    ATK
+    Stamina
+
+ How leveling works
+    killing enemies
+    finishing waves
+
+ Skill upgrade
+    Int
+        increases stamina 
+    Dex
+        increases HP
+        increases heal
+    Str
+        increases ATK
+
+GAME PROGRESSION:
+Every enemy kill heals you
+Every enemy kill levels you up
+    Wave 1
+        5 enemies
+    Wave 2
+        3 harder enemies
+    Wave 3
+        1 boss
+
+Boss HP <= 0, player wins
+Player HP <= 0, player lost
+
+SKILLS:
+Player
+    Attack
+        Normal Attack
+        Magic Attack
+            costs stamina
+    Heal
+Enemies:
+    Attack only LMAO
+_______________________________________
+Coding process:
+1. Do game progression first
+    # - make a character input on what the character name is
+    # - make a character with health and enemy with health
+    # - provide winning conditions
+    # - make them attack each other
+2. Add the next wave of enemies
+    # - then the next wave
+    # - adjust the attack and health of enemies
+    - provide rule that everytime you win, you regain back 
+        only your health #optimize - add shit like wow you 
+        #gained health
+3. define skills
+    - Int, Dex, Str
+    - add stamina in character stats
+    - add magic attack and normal attack in options
+        - make magic attack minus some stamina
+        - make heal minus some stamina
+        - stamina cant be used when current stamina < magic 
+            mana
+4. add leveling up
+    - provide rule that everytime you win, you level up.
+        - 1 point for each normal enemy
+        - 2 points for each harder enemy
+    - every time you level up, choose to increase Int, Dex, 
+        or Str by 1
+        - provide calculations on how Int, Dex, Str affects 
+            Stamina, HP and heal, and ATK increase
+5. Test the shit and debug
+6. Add main menu 
+    - Play
+    - Statistics
+        - put the name input to stats
+        - click play and play time++
+        - if boss hp dead, complete game++
+        - return main menu
+    - Exit 
