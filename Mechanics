@@ -63,21 +63,23 @@ Coding process:
         #gained health
 3. define skills
     - Int, Dex, Str
-    - add stamina in character stats
-    - add magic attack and normal attack in options
-        - make magic attack minus some stamina
-        - make heal minus some stamina
-        - stamina cant be used when current stamina < magic 
-            mana
+        - define level system for each
+    # - add stamina in character stats
+    # - add magic attack and normal attack in options
+    #     - make magic attack minus some stamina
+    #     - make heal minus some stamina
+    #     - stamina cant be used when current stamina < magic 
+    #         mana
 4. add leveling up
-    - provide rule that everytime you win, you level up.
-        - 1 point for each normal enemy
-        - 2 points for each harder enemy
-    - every time you level up, choose to increase Int, Dex, 
-        or Str by 1
-        - provide calculations on how Int, Dex, Str affects 
-            Stamina, HP and heal, and ATK increase
+    # - provide rule that everytime you win, you level up.
+        # - 1 point for each normal enemy
+        # - 2 points for each harder enemy
+    # - every time you level up, choose to increase Int, Dex, 
+    #     or Str by 1
+    #     - provide calculations on how Int, Dex, Str affects 
+    #         Stamina, HP and heal, and ATK increase
 5. Test the shit and debug
+    # - fix input properties
 6. Add main menu 
     - Play
     - Statistics

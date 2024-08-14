@@ -2,43 +2,100 @@ import java.util.*;
 public class Antventure_game {
 
     static Scanner scan = new Scanner(System.in);
-    static String CharacterName;
+    static String charName;
     static boolean win = false;
-    static int Int, Dex, Str, yourHP, yourATK, stamina, enemyHP, enemyATK, enemyType, choice, killNo = 1, colWidth1 = 30, colWidth2 = 25;
+    static int Int, Dex, Str, yourHP, maxHP, HPadd = 2, yourATK, stamina, staminaCost, maxStamina = 10, enemyHP, enemyATK, enemyType, choice, killNo = 1;
 
-    static void characterStats(){
-        yourHP = 10; yourATK = 3; stamina = 10;
+    static void charStats(){
+        yourHP = 10; maxHP = 10; yourATK = 3; stamina = 100;
         Int = 1;
         Dex = 1;
         Str = 1;
     }
 
-    static void charSkills(int choice){
+    static void lvlUp(){
+        System.out.println("Choose a skill to upgrade:\n(1.)Strength: " + Str + " (Increases ATK)\n(2.)Dexterity: " + Dex + " (Increases HP and HP Increase)\n(3.)Intelligence: " + Int + " (Increases Stamina, Max Stamina, and Magic DMG; Lowers Stamina cost)"); 
+        while (choice<1 || choice>3){
+            try {
+                choice = scan.nextInt();
+            } catch (InputMismatchException e){
+                System.out.println("Only accepts input of numbers 1-3");
+                scan.next();
+            }
+        }
+        switch (choice){
+            case 1:
+                choice = 0;
+                Str++;
+                yourATK++;
+                break;
+            case 2:
+                choice = 0;
+                Dex++;
+                maxHP += 2;
+                yourHP += 2;
+                HPadd += 2;
+                break;
+            case 3:
+                choice = 0;
+                Int++;
+                maxStamina += 20;
+                stamina += 20;
+                staminaCost *= 0.9;
+                break;
+        }
+    }
+    static void charSkills(){
+        while (choice<1||choice>4){
+            try {
+                choice = scan.nextInt();
+            } catch (InputMismatchException e){
+                System.out.println("Only accepts input of numbers 1-4");
+                scan.next();
+            }
+        }
+        
         switch (choice){
             case 1: //Normal Attack
+                choice = 0;
                 enemyHP -= yourATK;
+                if (stamina<maxStamina){
+                    stamina += 10;
+                    System.out.println("Stamina +10");
+                }
                 break;
             case 2: //Magic Attack
-                if (stamina < 0){
-                    System.out.println("####Your stamina is too low!####\n####You just lost a turn!####"); //modern problems require modern solutions B)
-                    break;
+                choice = 0;
+                if (stamina < staminaCost){
+                    System.out.println("####Your stamina is too low!####"); 
+                    charSkills();
                 } else {
                     enemyHP -= yourATK+3;
-                    stamina -= 6;
+                    stamina -= staminaCost;
                 }   
+                if (enemyHP<=0 && yourHP<=maxHP){
+                    yourHP += HPadd / 3;
+                }
                 break;
             case 3: //Heal
-                if (stamina < 0){
-                    System.out.println("####Your stamina is too low!####\n####You just lost a turn!####"); //modern problems require modern solutions B)
-                    break;
+                choice = 0;
+                if (stamina < staminaCost/2){
+                    System.out.println("####Your stamina is too low!####"); 
+                    charSkills();
+                } else if (yourHP >= maxHP){
+                    System.out.println("Your HP is currently at max");
+                    charSkills();
                 } else {
-                    yourHP += 3;
-                    stamina -= 4;
+                    System.out.println("HP + " + HPadd);
+                    yourHP += HPadd;
+                    stamina -= staminaCost/2;
                 }
                 break;
             case 4: //Leave
+                choice = 0;
                 System.out.println("\"This battle is not for me I guess\"");
                 System.exit(0);
+                break;
         }
     }
 
@@ -51,7 +108,7 @@ public class Antventure_game {
                 enemyHP = 15; enemyATK = 3;
                 break;
             case 3:  //boss
-                enemyHP = 30; enemyATK = 5;
+                enemyHP = 30; enemyATK = 10;
                 break;
             default:
                 break;
@@ -66,16 +123,15 @@ public class Antventure_game {
             System.out.println("\n************************************************");
 
             System.out.println("The enemy stats are: \nHP: " + enemyHP + "\tATK: " + enemyATK);
-            System.out.println("Your stats are: \nHP: " + yourHP + "\tATK: " + yourATK + "\tStamina: " + stamina);
+            System.out.println("Your stats are: \nHP: " + yourHP + "\tATK: " + yourATK + "\t\tStamina: " + stamina);
 
-            if (stamina>=0){
-                System.out.println("\nWhat will you do? \n(1.)Normal Attack\t(2.)Magic Attack\n(3.)Heal\t\t(4.)Run away (Exits the program)");
+            if (stamina>0){
+                System.out.println("\nWhat will you do? \n(1.)Normal Attack\t(2.)Magic Attack (ATK+3, Stamina-"+staminaCost+")\n(3.)Heal (HP+"+HPadd+")\t\t(4.)Run away (Exits the program)");
             } else {
                 System.out.println("\nWhat will you do? \n(1.)Normal Attack\t(4.)Run away (Exits the program)");
             }
 
-            choice = scan.nextInt();
-            charSkills(choice);
+            charSkills();
 
             while (enemyHP>0){ 
                 System.out.println("________________________________________________");
@@ -84,17 +140,24 @@ public class Antventure_game {
 
                 if (yourHP<=0){
                     System.out.println("Sorry, you lost...\n(1.)Retry?      (2.)Exit");
-                    choice = scan.nextInt();
+                    while (choice<1 || choice>2){
+                        try {
+                            choice = scan.nextInt();
+                        } catch (InputMismatchException e){
+                            System.out.println("Only accepts input of numbers 1 and 2");
+                            scan.next();
+                        }
+                    }
                     if (choice == 1){
                         killNo = 1;
                         choice = 0;
-                        main(null);
+                        break;
                     } else if (choice == 2){
+                        System.out.println("\"Oh damn I died\"");
                         System.exit(0);
                     }
-                    break;
                 } else if (enemyHP<=0){
-                    System.out.println(CharacterName + " wins!\n");
+                    System.out.println(charName + " wins!\n");
                     continue;
                 }
                 break;
@@ -102,55 +165,58 @@ public class Antventure_game {
             if (enemyHP<=0){
                 switch (enemyType){
                     case 1:
-                        System.out.println("You killed " + killNo + " Common Red Ants!\t +2 HP!");
+                        System.out.println("You killed " + killNo + " Common Red Ants!!");
                         killNo++;
                         continue;
                     case 2:
-                        System.out.println("You killed " + (killNo-5) + " Steel Red Ants!\t +4 HP!");
+                        System.out.println("You killed " + (killNo-5) + " Steel Red Ants!");
                         killNo++;
                         continue;
                     case 3: 
                         System.out.println("You killed the Leader Ant!");
-                        killNo++;
+                        killNo+=5;
                         continue;
                     default:
                         continue;
                 }
-            } else {
-                continue;
             }
         }
     }
     
+    
     public static void main (String args[]){
         System.out.println("Someone: Hello there.\nSomeone: May I ask for your name?");
-        CharacterName = scan.nextLine();
-        characterStats(); //insert your current stats
+        charName = scan.nextLine();
+        charStats(); //insert your current stats
+        staminaCost = 40;
 
-        System.out.println("\nSomeone: Oh hi " + CharacterName + "...");
+        System.out.println("\nSomeone: Oh hi " + charName + "...");
         System.out.println("**An ambush appeared!**\n5 Common Red Ants appeared!");
 
         enemyType = 1;
         for (int i = 5; i>0; i--){
             battleSequence();
-            yourHP += 2;
-            stamina += 2;
+            System.out.println("Level up!");
+            lvlUp();
         } 
 
-        System.out.println("\n\n\n\nSomeone: You... you managed to defeat it?");
+        System.out.println("\n\n\n\nSomeone: You... you managed to defeat them?");
         System.out.println("Someone: The-theres... more of them...");
-        // System.out.println("Someone: Here, take this shit");
-        yourATK = 5;
+        System.out.println("Someone: Here, take this thing\nYou got Steel Claws! (ATK+2)\n\nWhat's your reply?");
+        scan.next();
+        yourATK += 2;
 
+        System.out.println("\n\n3 Steel Red Ants appeared!");
         enemyType = 2;
         for (int i = 3; i>0; i--){
             battleSequence();
-            yourHP += 4;
+            System.out.println("Level up!\n");
+            lvlUp();
         }
 
         System.out.println("\n\n\nSomeone 2: You killed them???????????");
-        System.out.println("Someone 2: Kill the boss... NOW\n----Adrenaline Increased!----");
-        yourATK = 8;
+        System.out.println("Someone 2: Now it's... MY TURN\n----Adrenaline Increased!----\n(ATK+4)");
+        yourATK += 4;
 
         enemyType = 3;
         battleSequence();
